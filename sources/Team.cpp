@@ -149,7 +149,7 @@ double Character::distance(Character *other)
 }
 void Character::hit(int damage)
 {
-    if (!isAlive())
+    if (!isAlive() || damage < 0)
     {
         throw this;
     }
@@ -225,7 +225,10 @@ void Ninja::slash(Character *enemy)
     {
         throw enemy;
     }
-    if (isAlive() && distance(enemy) <= 1)
+    if(!isAlive()){
+        throw this;
+    }
+    if (distance(enemy) <= 1)
     {
         enemy->hit(40);
     }
@@ -290,6 +293,9 @@ bool Cowboy::hasboolets()
 }
 void Cowboy::reload()
 {
+    if(!isAlive()){
+        throw this;
+    }
     num_of_bullets = 6;
 }
 void Cowboy::shoot(Character *enemy)
@@ -298,7 +304,11 @@ void Cowboy::shoot(Character *enemy)
     {
         throw enemy;
     }
-    if (isAlive() && hasboolets())
+    if (!isAlive())
+    {
+        throw this;
+    }
+    if (hasboolets())
     {
         num_of_bullets--;
         enemy->hit(10);
@@ -326,6 +336,9 @@ void Cowboy::attack(Character *enemy)
 
 Team::Team(Character *leader)
 {
+    if(leader->inTeam){
+        throw leader;
+    }
     this->leader = leader;
     leader->inTeam = true;
     leader->placeInTeam = 0;
